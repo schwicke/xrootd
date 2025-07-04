@@ -46,11 +46,11 @@
 /******************************************************************************/
 /*                        G l o b a l   O b j e c t s                         */
 /******************************************************************************/
-  
+
        XrdPosixXrootd    Xroot;
 
        XrdPosixXrootPath XrootPath;
-  
+
 extern XrdPosixLinkage   Xunix;
 
 /******************************************************************************/
@@ -108,7 +108,7 @@ static inline void fseteof(FILE *fp)
 /******************************************************************************/
 /*                       X r d P o s i x _ A c c e s s                        */
 /******************************************************************************/
-  
+
 extern "C"
 {
 int XrdPosix_Access(const char *path, int amode)
@@ -145,7 +145,7 @@ int XrdPosix_Acl(const char *path, int cmd, int nentries, void *aclbufp)
         : Xunix.Acl(path,   cmd,nentries,aclbufp));
 }
 }
-  
+
 /******************************************************************************/
 /*                        X r d P o s i x _ C h d i r                         */
 /******************************************************************************/
@@ -162,7 +162,7 @@ int XrdPosix_Chdir(const char *path)
    return rc;
 }
 }
-  
+
 /******************************************************************************/
 /*                        X r d P o s i x _ C l o s e                         */
 /******************************************************************************/
@@ -195,7 +195,7 @@ int XrdPosix_Closedir(DIR *dirp)
 /******************************************************************************/
 /*                        X r d P o s i x _ C r e a t                         */
 /******************************************************************************/
-  
+
 extern "C"
 {
 int     XrdPosix_Creat(const char *path, mode_t mode)
@@ -205,7 +205,7 @@ int     XrdPosix_Creat(const char *path, mode_t mode)
    return XrdPosix_Open(path, O_WRONLY | O_CREAT | O_TRUNC, mode);
 }
 }
-  
+
 /******************************************************************************/
 /*                       X r d P o s i x _ F c l o s e                        */
 /******************************************************************************/
@@ -229,7 +229,7 @@ int XrdPosix_Fclose(FILE *stream)
 /******************************************************************************/
 /*                        X r d P o s i x _ F c n t l                         */
 /******************************************************************************/
-  
+
 extern "C"
 {
 int XrdPosix_Fcntl(int fd, int cmd, ...)
@@ -248,7 +248,7 @@ int XrdPosix_Fcntl(int fd, int cmd, ...)
 /******************************************************************************/
 /*                    X r d P o s i x _ F d a t a s y n c                     */
 /******************************************************************************/
-  
+
 extern "C"
 {
 int XrdPosix_Fdatasync(int fildes)
@@ -264,12 +264,12 @@ int XrdPosix_Fdatasync(int fildes)
 /******************************************************************************/
 /*                    X r d P o s i x _ F g e t x a t t r                     */
 /******************************************************************************/
-  
+
 #if defined(__linux__) || defined(__GNU__) || (defined(__FreeBSD_kernel__) && defined(__GLIBC__))
 extern "C"
 {
-long long XrdPosix_Fgetxattr (int fd, const char *name, void *value, 
-                              unsigned long long size)
+ssize_t XrdPosix_Fgetxattr (int fd, const char *name, void *value,
+                              size_t size)
 {
    if (Xroot.myFD(fd)) {errno = ENOTSUP; return -1;}
    return Xunix.Fgetxattr(fd, name, value, size);
@@ -280,7 +280,7 @@ long long XrdPosix_Fgetxattr (int fd, const char *name, void *value,
 /******************************************************************************/
 /*                       X r d P o s i x _ F f l u s h                        */
 /******************************************************************************/
-  
+
 extern "C"
 {
 int XrdPosix_Fflush(FILE *stream)
@@ -294,13 +294,13 @@ int XrdPosix_Fflush(FILE *stream)
    return Xroot.Fsync(fileno(stream));
 }
 }
-  
+
 /******************************************************************************/
 /*                        X r d P o s i x _ F o p e n                         */
 /******************************************************************************/
 
 #define ISMODE(x) !strcmp(mode, x)
-  
+
 extern "C"
 {
 FILE *XrdPosix_Fopen(const char *path, const char *mode)
@@ -335,7 +335,7 @@ FILE *XrdPosix_Fopen(const char *path, const char *mode)
 
 // First obtain a free stream
 //
-   if (!(stream = fdopen(fd, mode))) 
+   if (!(stream = fdopen(fd, mode)))
       {erc = errno; Xroot.Close(fd); errno = erc;}
 
 // All done
@@ -347,7 +347,7 @@ FILE *XrdPosix_Fopen(const char *path, const char *mode)
 /******************************************************************************/
 /*                        X r d P o s i x _ F r e a d                         */
 /******************************************************************************/
-  
+
 extern "C"
 {
 size_t XrdPosix_Fread(void *ptr, size_t size, size_t nitems, FILE *stream)
@@ -369,11 +369,11 @@ size_t XrdPosix_Fread(void *ptr, size_t size, size_t nitems, FILE *stream)
    return rc;
 }
 }
-  
+
 /******************************************************************************/
 /*                        X r d P o s i x _ F s e e k                         */
 /******************************************************************************/
-  
+
 extern "C"
 {
 int XrdPosix_Fseek(FILE *stream, long offset, int whence)
@@ -391,10 +391,10 @@ int XrdPosix_Fseek(FILE *stream, long offset, int whence)
 /******************************************************************************/
 /*                       X r d P o s i x _ F s e e k o                        */
 /******************************************************************************/
-  
+
 extern "C"
 {
-int XrdPosix_Fseeko(FILE *stream, long long offset, int whence)
+int XrdPosix_Fseeko(FILE *stream, off_t offset, int whence)
 {
 
 // Return the result of the fseek
@@ -409,7 +409,7 @@ int XrdPosix_Fseeko(FILE *stream, long long offset, int whence)
 /******************************************************************************/
 /*                        X r d P o s i x _ F s t a t                         */
 /******************************************************************************/
-  
+
 extern "C"
 {
 int XrdPosix_Fstat(int fildes, struct stat *buf)
@@ -443,7 +443,7 @@ int XrdPosix_FstatV(int ver, int fildes, struct stat *buf)
 /******************************************************************************/
 /*                        X r d P o s i x _ F s y n c                         */
 /******************************************************************************/
-  
+
 extern "C"
 {
 int XrdPosix_Fsync(int fildes)
@@ -455,11 +455,11 @@ int XrdPosix_Fsync(int fildes)
                               : Xunix.Fsync(fildes));
 }
 }
-  
+
 /******************************************************************************/
 /*                        X r d P o s i x _ F t e l l                         */
 /******************************************************************************/
-  
+
 extern "C"
 {
 long XrdPosix_Ftell(FILE *stream)
@@ -472,14 +472,14 @@ long XrdPosix_Ftell(FILE *stream)
    return static_cast<long>(Xroot.Lseek(fileno(stream), 0, SEEK_CUR));
 }
 }
-  
+
 /******************************************************************************/
 /*                       X r d P o s i x _ F t e l l o                        */
 /******************************************************************************/
-  
+
 extern "C"
 {
-long long XrdPosix_Ftello(FILE *stream)
+off_t XrdPosix_Ftello(FILE *stream)
 {
 
 // Return the result of the tell
@@ -489,14 +489,14 @@ long long XrdPosix_Ftello(FILE *stream)
    return Xroot.Lseek(fileno(stream), 0, SEEK_CUR);
 }
 }
-  
+
 /******************************************************************************/
 /*                    X r d P o s i x _ F t r u n c a t e                     */
 /******************************************************************************/
-  
+
 extern "C"
 {
-int XrdPosix_Ftruncate(int fildes, long long offset)
+int XrdPosix_Ftruncate(int fildes, off_t offset)
 {
 
 // Return the result of the ftruncate
@@ -509,7 +509,7 @@ int XrdPosix_Ftruncate(int fildes, long long offset)
 /******************************************************************************/
 /*                       X r d P o s i x _ F w r i t e                        */
 /******************************************************************************/
-  
+
 extern "C"
 {
 size_t XrdPosix_Fwrite(const void *ptr, size_t size, size_t nitems, FILE *stream)
@@ -529,16 +529,16 @@ size_t XrdPosix_Fwrite(const void *ptr, size_t size, size_t nitems, FILE *stream
    return rc;
 }
 }
-  
+
 /******************************************************************************/
 /*                     X r d P o s i x _ G e t x a t t r                      */
 /******************************************************************************/
-  
+
 #if defined(__linux__) || defined(__GNU__) || (defined(__FreeBSD_kernel__) && defined(__GLIBC__))
 extern "C"
 {
-long long XrdPosix_Getxattr (const char *path, const char *name, void *value, 
-                             unsigned long long size)
+off_t XrdPosix_Getxattr (const char *path, const char *name, void *value,
+                             ssize_t size)
 {
    char *myPath, buff[2048];
 
@@ -553,12 +553,12 @@ long long XrdPosix_Getxattr (const char *path, const char *name, void *value,
 /******************************************************************************/
 /*                    X r d P o s i x _ L g e t x a t t r                     */
 /******************************************************************************/
-  
+
 #if defined(__linux__) || defined(__GNU__) || (defined(__FreeBSD_kernel__) && defined(__GLIBC__))
 extern "C"
 {
-long long XrdPosix_Lgetxattr (const char *path, const char *name, void *value, 
-                              unsigned long long size)
+off_t XrdPosix_Lgetxattr (const char *path, const char *name, void *value,
+                              ssize_t size)
 {
    if (XrootPath.URL(path, 0, 0)) {errno = ENOTSUP; return -1;}
    return Xunix.Lgetxattr(path, name, value, size);
@@ -569,10 +569,10 @@ long long XrdPosix_Lgetxattr (const char *path, const char *name, void *value,
 /******************************************************************************/
 /*                        X r d P o s i x _ L s e e k                         */
 /******************************************************************************/
-  
+
 extern "C"
 {
-long long XrdPosix_Lseek(int fildes, long long offset, int whence)
+off_t XrdPosix_Lseek(int fildes, off_t offset, int whence)
 {
 
 // Return the operation of the seek
@@ -585,7 +585,7 @@ long long XrdPosix_Lseek(int fildes, long long offset, int whence)
 /******************************************************************************/
 /*                        X r d P o s i x _ L s t a t                         */
 /******************************************************************************/
-  
+
 extern "C"
 {
 int XrdPosix_Lstat(const char *path, struct stat *buf)
@@ -607,7 +607,7 @@ int XrdPosix_Lstat(const char *path, struct stat *buf)
           : Xroot.Stat(myPath, buf));
 }
 }
-  
+
 /******************************************************************************/
 /*                        X r d P o s i x _ M k d i r                         */
 /******************************************************************************/
@@ -636,7 +636,7 @@ int XrdPosix_Mkdir(const char *path, mode_t mode)
 /******************************************************************************/
 /*                         X r d P o s i x _ O p e n                          */
 /******************************************************************************/
-  
+
 extern "C"
 {
 int XrdPosix_Open(const char *path, int oflag, ...)
@@ -682,7 +682,7 @@ DIR* XrdPosix_Opendir(const char *path)
 // Make sure a path was passed
 //
    if (!path) {errno = EFAULT; return 0;}
-   
+
 // Unix opendir
 //
    if (!(myPath = XrootPath.URL(path, buff, sizeof(buff))))
@@ -697,7 +697,7 @@ DIR* XrdPosix_Opendir(const char *path)
 /******************************************************************************/
 /*                     X r d P o s i x _ P a t h c o n f                      */
 /******************************************************************************/
-  
+
 // This is a required addition for Solaris 10+ systems
 
 extern "C"
@@ -712,11 +712,11 @@ long XrdPosix_Pathconf(const char *path, int name)
 /******************************************************************************/
 /*                        X r d P o s i x _ P r e a d                         */
 /******************************************************************************/
-  
+
 extern "C"
 {
-long long XrdPosix_Pread(int fildes, void *buf, unsigned long long nbyte,
-                         long long offset)
+size_t XrdPosix_Pread(int fildes, void *buf, ssize_t nbyte,
+                         off_t offset)
 {
 
 // Return the results of the read
@@ -729,11 +729,11 @@ long long XrdPosix_Pread(int fildes, void *buf, unsigned long long nbyte,
 /******************************************************************************/
 /*                       X r d P o s i x _ P w r i t e                        */
 /******************************************************************************/
-  
+
 extern "C"
 {
-long long XrdPosix_Pwrite(int fildes, const void *buf, unsigned long long nbyte,
-                          long long offset)
+ssize_t XrdPosix_Pwrite(int fildes, const void *buf, ssize_t nbyte,
+                          off_t offset)
 {
 
 // Return the results of the write
@@ -746,10 +746,10 @@ long long XrdPosix_Pwrite(int fildes, const void *buf, unsigned long long nbyte,
 /******************************************************************************/
 /*                         X r d P o s i x _ R e a d                          */
 /******************************************************************************/
-  
+
 extern "C"
 {
-long long XrdPosix_Read(int fildes, void *buf, unsigned long long nbyte)
+size_t XrdPosix_Read(int fildes, void *buf, ssize_t nbyte)
 {
 
 // Return the results of the read
@@ -758,14 +758,14 @@ long long XrdPosix_Read(int fildes, void *buf, unsigned long long nbyte)
                               : Xunix.Read(fildes, buf, nbyte));
 }
 }
- 
+
 /******************************************************************************/
 /*                        X r d P o s i x _ R e a d v                         */
 /******************************************************************************/
-  
+
 extern "C"
 {
-long long XrdPosix_Readv(int fildes, const struct iovec *iov, int iovcnt)
+size_t XrdPosix_Readv(int fildes, const struct iovec *iov, int iovcnt)
 {
 
 // Return results of the readv
@@ -913,7 +913,7 @@ void XrdPosix_Seekdir(DIR *dirp, long loc)
 /******************************************************************************/
 /*                         X r d P o s i x _ S t a t                          */
 /******************************************************************************/
-  
+
 extern "C"
 {
 int XrdPosix_Stat(const char *path, struct stat *buf)
@@ -935,11 +935,11 @@ int XrdPosix_Stat(const char *path, struct stat *buf)
           : Xroot.Stat(myPath, buf));
 }
 }
-  
+
 /******************************************************************************/
 /*                       X r d P o s i x _ S t a t f s                        */
 /******************************************************************************/
-  
+
 extern "C"
 {
 int XrdPosix_Statfs(const char *path, struct statfs *buf)
@@ -953,15 +953,15 @@ int XrdPosix_Statfs(const char *path, struct statfs *buf)
 // Return the results of an open of a Unix file
 //
    return ((myPath = XrootPath.URL(path, buff, sizeof(buff)))
-          ? Xroot.Statfs(myPath, buf) 
+          ? Xroot.Statfs(myPath, buf)
           : Xunix.Statfs64(path, (struct statfs64 *)buf));
 }
 }
-  
+
 /******************************************************************************/
 /*                      X r d P o s i x _ S t a t v f s                       */
 /******************************************************************************/
-  
+
 extern "C"
 {
 int XrdPosix_Statvfs(const char *path, struct statvfs *buf)
@@ -975,7 +975,7 @@ int XrdPosix_Statvfs(const char *path, struct statvfs *buf)
 // Return the results of an open of a Unix file
 //
    return ((myPath = XrootPath.URL(path, buff, sizeof(buff)))
-          ? Xroot.Statvfs(myPath, buf) 
+          ? Xroot.Statvfs(myPath, buf)
           : Xunix.Statvfs64(path, (struct statvfs64 *)buf));
 }
 }
@@ -999,10 +999,10 @@ long XrdPosix_Telldir(DIR *dirp)
 /******************************************************************************/
 /*                     X r d P o s i x _ T r u n c a t e                      */
 /******************************************************************************/
-  
+
 extern "C"
 {
-int XrdPosix_Truncate(const char *path, long long offset)
+int XrdPosix_Truncate(const char *path, off_t offset)
 {
    char *myPath, buff[2048];
 
@@ -1020,7 +1020,7 @@ int XrdPosix_Truncate(const char *path, long long offset)
    return Xroot.Truncate(myPath, offset);
 }
 }
-  
+
 /******************************************************************************/
 /*                      X r d P o s i x _ U n l i n k                         */
 /******************************************************************************/
@@ -1028,7 +1028,7 @@ int XrdPosix_Truncate(const char *path, long long offset)
 extern "C"
 {
 int XrdPosix_Unlink(const char *path)
-{   
+{
    char *myPath, buff[2048];
 
 // Make sure a path was passed
@@ -1049,10 +1049,10 @@ int XrdPosix_Unlink(const char *path)
 /******************************************************************************/
 /*                        X r d P o s i x _ W r i t e                         */
 /******************************************************************************/
-  
+
 extern "C"
 {
-long long XrdPosix_Write(int fildes, const void *buf, unsigned long long nbyte)
+size_t XrdPosix_Write(int fildes, const void *buf, ssize_t nbyte)
 {
 
 // Return the results of the write
@@ -1061,14 +1061,14 @@ long long XrdPosix_Write(int fildes, const void *buf, unsigned long long nbyte)
                               : Xunix.Write(fildes, buf, nbyte));
 }
 }
- 
+
 /******************************************************************************/
 /*                       X r d P o s i x _ W r i t e v                        */
 /******************************************************************************/
-  
+
 extern "C"
 {
-long long XrdPosix_Writev(int fildes, const struct iovec *iov, int iovcnt)
+ssize_t XrdPosix_Writev(int fildes, const struct iovec *iov, int iovcnt)
 {
 
 // Return results of the writev
@@ -1081,7 +1081,7 @@ long long XrdPosix_Writev(int fildes, const struct iovec *iov, int iovcnt)
 /******************************************************************************/
 /*                     X r d P o s i x _ i s M y P a t h                      */
 /******************************************************************************/
-  
+
 int XrdPosix_isMyPath(const char *path)
 {
     return (0 != XrootPath.URL(path, 0, 0));
@@ -1090,7 +1090,7 @@ int XrdPosix_isMyPath(const char *path)
 /******************************************************************************/
 /*                          X r d P o s i x _ U R L                           */
 /******************************************************************************/
-  
+
 char *XrdPosix_URL(const char *path, char *buff, int blen)
 {
    return XrootPath.URL(path, buff, blen);
